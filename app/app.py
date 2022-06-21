@@ -25,10 +25,40 @@ else:
 print(f"\n-> ENV is set to: {app.config['ENV']}\n")
 
 
+# SQLAlchemy session handling
+from core.database import Session, engine
+
+@app.teardown_appcontext
+def shutdown_session(*args, **kwargs):
+    print(
+        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n",
+        f"before: {engine.pool.status()}"
+    )
+    Session.remove()
+    print(
+        f" after:  {engine.pool.status()}\n",
+        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ",
+    )
+
+
 # Temp Routes
 @app.route("/")
 def hello():
     return "hello world!"
+
+# Endpoint for Database Status
+@app.route("/db")
+def db():
+    db_session = Session()
+
+    db_status = None
+    try:
+        db_session.execute("select NOW();").all()[0][0]
+        db_status = "Up"
+    except:
+        db_status = "Down"
+
+    return f"Database Status: {db_status}"
 
 
 # Import blueprints
