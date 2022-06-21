@@ -1,0 +1,11 @@
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: ropstam_test_task_db
+      MYSQL_USER: ropstam_user
+      MYSQL_PASSWORD: ropstam_pass
+    ports:
+      - 3306:3306
+
