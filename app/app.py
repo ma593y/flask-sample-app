@@ -41,6 +41,12 @@ def shutdown_session(*args, **kwargs):
     )
 
 
+# 404 Error Handler
+@app.errorhandler(404)
+def page_not_found(error):
+    return f"This endpoint does not exist.", 404
+
+
 # Temp Routes
 @app.route("/")
 def hello():
