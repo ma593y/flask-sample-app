@@ -25,6 +25,8 @@ print(f"\n-> ENV is set to: {app.config['ENV']}\n")
 # Import Database Configurations & Models
 from core.database import engine, Session, Base
 from models.users_model import UsersModel
+from models.vehicles_model import VehiclesModel
+from models.categories_model import CategoriesModel
 
 
 # Create Database Tables
