@@ -1,7 +1,14 @@
 from flask import Blueprint
+from middlewares.authentication_decorator import check_authentication
 
 
 vehicles_blueprint = Blueprint("vehicles", __name__, url_prefix="/vehicles")
+
+
+@vehicles_blueprint.before_request
+@check_authentication
+def before_request(*args, **kwargs):
+    pass
 
 
 @vehicles_blueprint.route("/", methods=["GET"])
