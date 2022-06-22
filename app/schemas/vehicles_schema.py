@@ -1,7 +1,17 @@
 from wsgiref import validate
 from core.database import Session
 from models.vehicles_model import VehiclesModel
+from models.categories_model import CategoriesModel
 from marshmallow import EXCLUDE, Schema, fields, validate, post_load, ValidationError
+
+
+
+
+def check_category_id(category_id):
+    with Session() as db_session:
+        category = db_session.query(CategoriesModel).filter(CategoriesModel.category_id.like(category_id)).all()
+        if not category:
+            raise ValidationError("Category id does not exists with the given value.")
 
 
 
@@ -39,27 +49,28 @@ class VehiclesSchema(Schema):
     )
     
     vehicle_year = fields.Integer( required = True,
-        validate = [validate.Length(equal=4, error="Vehicle year must be at least {equal} characters long.")]
+        # validate = [validate.Length(equal=4, error="Vehicle year must be at least {equal} characters long.")]
     )
     vehicle_price = fields.Integer( required = True,
-        validate = [validate.Length(min=4, error="Vehicle price must be at least {min} characters long.")]
+        # validate = [validate.Length(min=4, error="Vehicle price must be at least {min} characters long.")]
     )
     vehicle_mileage = fields.Integer( required = True,
-        validate = [validate.Length(min=6, error="Vehicle mileage must be at least {min} characters long.")]
+        # validate = [validate.Length(min=6, error="Vehicle mileage must be at least {min} characters long.")]
     )
     vehicle_tank_capacity = fields.Integer( required = True,
-        validate = [validate.Length(min=2, error="Vehicle tank capacity must be at least {min} characters long.")]
+        # validate = [validate.Length(min=2, error="Vehicle tank capacity must be at least {min} characters long.")]
     )
     vehicle_engine_capacity = fields.Integer( required = True,
-        validate = [validate.Length(min=3, error="Vehicle engine capacity must be at least {min} characters long.")]
+        # validate = [validate.Length(min=3, error="Vehicle engine capacity must be at least {min} characters long.")]
     )
 
-    # category = fields.String()
+    category_id = fields.Integer( required = True,
+        validate = check_category_id
+    )
 
     updated_on = fields.DateTime()
     created_on = fields.DateTime()
     
     class Meta:
         unknown = EXCLUDE
-
 
