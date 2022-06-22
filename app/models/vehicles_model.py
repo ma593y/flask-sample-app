@@ -12,13 +12,15 @@ class VehiclesModel(Base):
     vehicle_make = Column(String(200))
     vehicle_model = Column(String(200))
     vehicle_color = Column(String(200))
-    vehicle_year = Column(String(200))
-    vehicle_price = Column(String(200))
-    vehicle_mileage = Column(String(200))
     vehicle_fuel_type = Column(String(200))
     vehicle_transmission = Column(String(200))
-    vehicle_tank_capacity = Column(String(200))
-    vehicle_engine_capacity = Column(String(200))
+
+    vehicle_year = Column(Integer)
+    vehicle_price = Column(Integer)
+    vehicle_mileage = Column(Integer)
+    vehicle_tank_capacity = Column(Integer)
+    vehicle_engine_capacity = Column(Integer)
+
     updated_on = Column(DATETIME(), onupdate=func.now())
     created_on = Column(DATETIME(), default=func.now())
 
