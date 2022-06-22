@@ -25,9 +25,17 @@ else:
 print(f"\n-> ENV is set to: {app.config['ENV']}\n")
 
 
-# SQLAlchemy session handling
-from core.database import Session, engine
+# Import Database Configurations & Models
+from core.database import engine, Session, Base
+from models.users_model import UsersModel
 
+
+# Create Database Tables
+# Base.metadata.drop_all(engine)
+Base.metadata.create_all(engine)
+
+
+# SQLAlchemy session handling
 @app.teardown_appcontext
 def shutdown_session(*args, **kwargs):
     print(
