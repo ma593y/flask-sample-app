@@ -6,9 +6,6 @@ from dotenv import load_dotenv
 # Load env variables
 load_dotenv()
 
-# print(f"HOST: {os.getenv('HOST')}")
-# print(f"PORT: {os.getenv('PORT')}")
-
 
 # Create flask app
 app = Flask(__name__)
@@ -58,7 +55,7 @@ def page_not_found(error):
 # Temp Routes
 @app.route("/")
 def hello():
-    return "hello world!"
+    return "hello world!", 200
 
 # Endpoint for Database Status
 @app.route("/db")
@@ -72,7 +69,7 @@ def db():
     except:
         db_status = "Down"
 
-    return f"Database Status: {db_status}"
+    return f"Database Status: {db_status}", 200
 
 
 # Import blueprints

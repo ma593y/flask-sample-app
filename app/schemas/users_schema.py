@@ -5,7 +5,7 @@ from marshmallow import EXCLUDE, Schema, fields, validate, post_load, Validation
 
 
 
-def check_user_emailon_signup(email):
+def check_user_email_on_signup(email):
     with Session() as db_session:
         user = db_session.query(UsersModel).filter_by(user_email=email).first()
         if user:
@@ -13,7 +13,7 @@ def check_user_emailon_signup(email):
 
 
 
-def check_user_emailon_signin(email):
+def check_user_email_on_signin(email):
     with Session() as db_session:
         user = db_session.query(UsersModel).filter_by(user_email=email).first()
         if not user:
@@ -43,7 +43,7 @@ class UsersSchema(Schema):
 class UsersSignupSchema(UsersSchema, Schema):
     user_email = fields.Email(
         required = True,
-        validate = check_user_emailon_signup
+        validate = check_user_email_on_signup
     )
 
 
@@ -51,7 +51,7 @@ class UsersSignupSchema(UsersSchema, Schema):
 class UsersSigninSchema(UsersSchema, Schema):
     user_email = fields.Email(
         required = True,
-        validate = check_user_emailon_signin
+        validate = check_user_email_on_signin
     )
     user_password = fields.String(
         required = True,

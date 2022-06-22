@@ -1,4 +1,3 @@
-from unittest import result
 from flask import Blueprint, request
 from marshmallow import ValidationError
 from core.database import Session
