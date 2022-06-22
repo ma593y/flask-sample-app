@@ -1,7 +1,14 @@
 from flask import Blueprint
+from middlewares.authentication_decorator import check_authentication
 
 
 categories_blueprint = Blueprint("categories", __name__, url_prefix="/categories")
+
+
+@categories_blueprint.before_request
+@check_authentication
+def before_request(*args, **kwargs):
+    pass
 
 
 @categories_blueprint.route("/", methods=["GET"])
