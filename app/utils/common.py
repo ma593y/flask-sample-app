@@ -54,4 +54,19 @@ def email_password_to_user(user_email, user_password):
 
 
 
+def generate_jwt_token(user_data):
+    payload = user_data.copy()
+    payload.update(
+        {
+            'exp': datetime.now(tz=timezone.utc) + timedelta(hours=3),
+            'iat': datetime.now(tz=timezone.utc)
+        }
+    )
+
+    token = jwt.encode(payload, os.getenv("RSA_PRIVATE_KEY"), algorithm="RS512")
+    bearer_token = f"Bearer {token}"
+    return bearer_token
+
+
+
 # 
