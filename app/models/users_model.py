@@ -1,9 +1,8 @@
-from email.policy import default
 from sqlalchemy.sql import func
 from core.database import Base
 
-from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Boolean, Column, Integer, String, DATETIME
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 
