@@ -14,7 +14,6 @@ def check_authentication(f):
         token = request.headers.get('Authorization')[7:]
         try:
             payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
-            print(payload)
             if not payload["user_is_active"]:
                 abort(401)
         except jwt.ExpiredSignatureError:
