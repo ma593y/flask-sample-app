@@ -1,8 +1,8 @@
-from flask import Blueprint, jsonify, request, Response
 from core.database import Session
 from marshmallow import ValidationError
 from models.vehicles_model import VehiclesModel
 from schemas.vehicles_schema import VehiclesSchema
+from flask import Blueprint, jsonify, request, Response
 from middlewares.authentication_decorator import check_authentication
 
 
@@ -22,7 +22,6 @@ def index():
         vehicles = db_session.query(VehiclesModel).filter().all()
 
     vehicles_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicles, many=True)
-
     return jsonify(vehicles_data), 200
 
 
@@ -57,7 +56,6 @@ def read(vehicle_id):
         return Response(status=204)
 
     vehicle_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicle)
-
     return jsonify(vehicle_data), 200
 
 
@@ -113,3 +111,5 @@ def delete(vehicle_id):
         db_session.commit()
 
     return jsonify(vehicle_data), 200
+
+

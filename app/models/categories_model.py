@@ -1,8 +1,6 @@
-from sqlalchemy.sql import func
 from core.database import Base
-
+from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-# from models.vehicles_model import VehiclesModel
 from sqlalchemy import Column, Integer, String, DATETIME
 
 
