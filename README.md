@@ -1,14 +1,56 @@
 # Ropstam-Test-Task-Backend
 
 A backend app server with the following features,
-- User sign up using full name and email
-- Email randomly generated password on sign up
-- Sign in using the user credentials to get JWT token
-- Access API endpoints with the issued JWT token
-- Data validation on POST/PUT API endpoints
+    
+    1. User sign up using full name and email
+    2. Email randomly generated password on sign up
+    3. Sign in using the user credentials to get JWT token
+    4. Access API endpoints with the issued JWT token
+    5. Data validation on POST/PUT API endpoints
 
+## Backend Tech Stack:
 
-## API endpoints are as follows,
+The backend app is using following tools and technologies,
+
+| Tools & Technologies      | Description  |
+| :-------------: |:-------------|
+| [Flask](https://flask.palletsprojects.com/) | A micro web framework based on Python. |
+| [MySQL](https://www.mysql.com/) | An open-source relational database. |
+| [SQLAlchemy](https://www.sqlalchemy.org/) | An open-source object-relational mapper for python. |
+| [Marshmallow](https://marshmallow.readthedocs.io/) | A python library for data validation, serialization and deserialization. |
+| [Docker](https://hub.docker.com/) | An open source containerization platform. |
+
+## Project folders and files structure:
+    
+    ropstam-test-task-backend/                  # Project foler
+        app/
+            middlewares/                        # It contains decorator files.
+                __init__.py
+                middleware_files.py
+            blueprints/                         # It contains api endpoints files.
+                __init__.py
+                blueprints_files.py
+            schemas/                            # It contains schemas files for data validation, serialization and desrialization.
+                __init__.py
+                schemas_files.py
+            models/                             # It contains ORM models files.
+                __init__.py
+                models_files.py
+            utils/                              # It contains common utils funcs files.
+                __init__.py
+                utils_files.py
+            core/                               # It contains core settings files for App or database.
+                __init__.py
+                core_files.py
+            main.py                             # It's the main app file.
+        .env
+        requirements.txt
+        docker-compose.yml
+
+## API endpoints:
+
+The API endpoints are as follows,
+
     - Temporary API endpoint,
         - [GET] / : hello world!
 
