@@ -1,8 +1,7 @@
 from wsgiref import validate
 from core.database import Session
-from models.vehicles_model import VehiclesModel
 from models.categories_model import CategoriesModel
-from marshmallow import EXCLUDE, Schema, fields, validate, post_load, ValidationError
+from marshmallow import EXCLUDE, Schema, fields, validate, ValidationError
 
 
 
@@ -73,4 +72,5 @@ class VehiclesSchema(Schema):
     
     class Meta:
         unknown = EXCLUDE
+
 

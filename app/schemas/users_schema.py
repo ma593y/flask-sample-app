@@ -68,3 +68,4 @@ class UsersSigninSchema(UsersSchema, Schema):
             user = db_session.query(UsersModel).filter_by(user_email=data["user_email"]).first()
         return user, data
 
+

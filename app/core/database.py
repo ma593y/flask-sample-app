@@ -19,10 +19,13 @@ DB_PASSWORD = os.getenv("DB_PASSWORD")
 SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USERNAME}:{quote_plus(DB_PASSWORD)}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
 
 
-# SQLAlchemy Setup
+# SQLAlchemy Connections Setup
 
 engine = create_engine(SQLALCHEMY_DATABASE_URI, pool_size=100, max_overflow=50, pool_recycle=3600)
 session_factory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Session = scoped_session(session_factory)
+
+
+# SQLAlchemy Base Class Setup
 
 Base = declarative_base()

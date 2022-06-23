@@ -1,7 +1,7 @@
 from wsgiref import validate
 from core.database import Session
 from models.categories_model import CategoriesModel
-from marshmallow import EXCLUDE, Schema, fields, validate, post_load, ValidationError
+from marshmallow import EXCLUDE, Schema, fields, validate, ValidationError
 
 
 
@@ -24,11 +24,10 @@ class CategoriesSchema(Schema):
         ]
     )
 
-    # vehicles = fields.List()
-
     updated_on = fields.DateTime()
     created_on = fields.DateTime()
     
     class Meta:
         unknown = EXCLUDE
+
 

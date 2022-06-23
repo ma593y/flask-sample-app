@@ -1,6 +1,6 @@
+import jwt, os
 from functools import wraps
 from flask import request, abort
-import jwt, os
 
 
 
@@ -24,3 +24,5 @@ def check_authentication(f):
         
         return f(*args, **kwargs)
     return decorated_function
+
+

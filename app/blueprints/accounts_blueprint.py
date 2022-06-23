@@ -1,6 +1,6 @@
+from core.database import Session
 from flask import Blueprint, request
 from marshmallow import ValidationError
-from core.database import Session
 from models.users_model import UsersModel
 from schemas.users_schema import UsersSignupSchema, UsersSigninSchema
 from utils.common import generate_random_password, email_password_to_user, generate_jwt_token
@@ -48,3 +48,5 @@ def signin():
     user_data = UsersSigninSchema(only=("user_id", "user_email", "user_full_name", "user_is_active", "created_on")).dump(user)
     bearer_token = generate_jwt_token(user_data)
     return {"bearer_token": bearer_token}, 200
+
+

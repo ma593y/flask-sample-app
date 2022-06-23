@@ -1,8 +1,8 @@
-from flask import Blueprint, Response, jsonify, request, abort
 from core.database import Session
 from marshmallow import ValidationError
 from models.categories_model import CategoriesModel
 from schemas.categories_schema import CategoriesSchema
+from flask import Blueprint, Response, jsonify, request
 from middlewares.authentication_decorator import check_authentication
 
 
@@ -22,7 +22,6 @@ def index():
         categories = db_session.query(CategoriesModel).filter().all()
 
     categories_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(categories, many=True)
-
     return jsonify(categories_data), 200
 
 
@@ -57,7 +56,6 @@ def read(category_id):
         return Response(status=204)
 
     category_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(category)
-
     return jsonify(category_data), 200
 
 
@@ -101,3 +99,5 @@ def delete(category_id):
         db_session.commit()
 
     return jsonify(category_data), 200
+
+

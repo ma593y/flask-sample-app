@@ -29,7 +29,7 @@ from models.vehicles_model import VehiclesModel
 from models.categories_model import CategoriesModel
 
 
-# Create Database Tables
+# Create/Drop Database Tables
 # Base.metadata.drop_all(engine)
 Base.metadata.create_all(engine)
 
