@@ -60,7 +60,7 @@ def hello():
     return "hello world!", 200
 
 # Endpoint for Database Status
-@app.route("/db")
+@app.route("/db_status")
 def db():
     db_session = Session()
 
