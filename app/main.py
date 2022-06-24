@@ -1,5 +1,5 @@
 import os
-from flask import Flask, Response, jsonify
+from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -52,27 +52,23 @@ def shutdown_session(*args, **kwargs):
 # 404 Error Handler
 @app.errorhandler(404)
 def page_not_found(error):
-    return f"This endpoint does not exist.", 404
+    return jsonify({"message": "This endpoint doesn't exists."}), 404
 
 
 # Temp Routes
 @app.route("/")
 def hello():
-    return "hello world!", 200
+    return jsonify({"message":"hello world!"}), 200
 
 # Endpoint for Database Status
 @app.route("/db_status")
 def db():
     db_session = Session()
-
-    db_status = None
     try:
         db_session.execute("select NOW();").all()[0][0]
-        db_status = "Up"
+        return jsonify({"message": "Database is working fine."}), 200
     except:
-        db_status = "Down"
-
-    return f"Database Status: {db_status}", 200
+        return jsonify({"message": "Something is wrong with database."}), 503
 
 
 # Import blueprints

@@ -1,8 +1,8 @@
 from core.database import Session
 from marshmallow import ValidationError
+from flask import Blueprint, jsonify, request
 from models.categories_model import CategoriesModel
 from schemas.categories_schema import CategoriesSchema
-from flask import Blueprint, Response, jsonify, request
 from middlewares.authentication_decorator import check_authentication
 
 
@@ -22,7 +22,15 @@ def index():
         categories = db_session.query(CategoriesModel).filter().all()
 
     categories_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(categories, many=True)
-    return jsonify(categories_data), 200
+    return jsonify(
+        {
+            "message": "A list of categories founded in database.",
+            "data": {
+                "categories":categories_data,
+                "count": len(categories_data)
+            }
+        }
+    ), 200
 
 
 @categories_blueprint.route("/", methods=["POST"])
@@ -32,7 +40,12 @@ def create():
     try:
         result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     category_data = schema.dump(result)
     new_category = CategoriesModel(**category_data)
@@ -42,8 +55,13 @@ def create():
     db_session.commit()
 
     db_session.refresh(new_category)
-    new_user_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(new_category)
-    return new_user_data, 201
+    new_category_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(new_category)
+    return jsonify(
+        {
+            "message": "The category has been created.",
+            "data": {"category": new_category_data}
+        }
+    ), 201
 
 
 @categories_blueprint.route("/<int:category_id>", methods=["GET"])
@@ -53,10 +71,15 @@ def read(category_id):
         category = db_session.query(CategoriesModel).filter_by(category_id=category_id).first()
 
     if not category:
-        return Response(status=204)
+        return jsonify({"message": "The category is not found in database."}), 204
 
     category_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(category)
-    return jsonify(category_data), 200
+    return jsonify(
+        {
+            "message": "The category has been found in database.",
+            "data": {"category": category_data}
+        }
+    ), 200
 
 
 @categories_blueprint.route("/<int:category_id>", methods=["PUT"])
@@ -66,14 +89,19 @@ def update(category_id):
     try:
         result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     category_data = None
     with Session() as db_session:
         category = db_session.query(CategoriesModel).filter_by(category_id=category_id).first()
 
         if not category:
-            return Response(status=204)
+            return jsonify({"message": "The category is not found in database."}), 204
         
         category.category_name = result["category_name"]
         db_session.commit()
@@ -81,7 +109,12 @@ def update(category_id):
         db_session.refresh(category)
         category_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(category)
 
-    return jsonify(category_data), 200
+    return jsonify(
+        {
+            "message": "The category has been updated in database.",
+            "data": {"category": category_data}
+        }
+    ), 200
 
 
 @categories_blueprint.route("/<int:category_id>", methods=["DELETE"])
@@ -91,13 +124,18 @@ def delete(category_id):
         category = db_session.query(CategoriesModel).filter_by(category_id=category_id).first()
 
         if not category:
-            return Response(status=204)
+            return jsonify({"message": "The category is not found in database."}), 204
 
         category_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(category)
 
         db_session.delete(category)
         db_session.commit()
 
-    return jsonify(category_data), 200
+    return jsonify(
+        {
+            "message": "The category has been deleted from database.",
+            "data": {"category": category_data}
+        }
+    ), 200
 
 
