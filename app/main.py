@@ -1,5 +1,5 @@
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
 
@@ -11,6 +11,15 @@ load_dotenv()
 # Create flask app
 app = Flask(__name__)
 CORS(app)
+
+
+# Fix Cors Issues
+@app.before_request
+def before_request_func():
+    if request.method == "OPTIONS": # CORS preflight
+        response = make_response()
+        return response
+
 
 # Configurations
 if app.config["ENV"] == "production":
