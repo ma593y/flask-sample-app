@@ -1,5 +1,6 @@
 import os
-from flask import Flask
+from flask import Flask, Response, jsonify
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 
@@ -9,7 +10,7 @@ load_dotenv()
 
 # Create flask app
 app = Flask(__name__)
-
+CORS(app)
 
 # Configurations
 if app.config["ENV"] == "production":
