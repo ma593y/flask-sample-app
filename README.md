@@ -84,7 +84,7 @@ The API endpoints are as follows,
     source venv/bin/activate
 
   #### 3. Install libraries(first time only).
-    pip install flask sqlalchemy marshmallow PyMySQL[rsa] pyjwt[crypto] python-dotenv
+    pip install flask sqlalchemy marshmallow PyMySQL[rsa] pyjwt[crypto] python-dotenv flask-cors
     #or
     pip install -r requirements.txt
 

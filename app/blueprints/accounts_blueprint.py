@@ -1,7 +1,7 @@
 from core.database import Session
-from flask import Blueprint, request
 from marshmallow import ValidationError
 from models.users_model import UsersModel
+from flask import Blueprint, request, jsonify
 from schemas.users_schema import UsersSignupSchema, UsersSigninSchema
 from utils.common import generate_random_password, email_password_to_user, generate_jwt_token
 
@@ -16,7 +16,12 @@ def signup():
     try:
         result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     user_data = schema.dump(result)
     new_user = UsersModel(**user_data)
@@ -28,9 +33,7 @@ def signup():
     db_session.commit()
     email_password_to_user(new_user.user_email, random_password)
 
-    db_session.refresh(new_user)
-    new_user_data = UsersSignupSchema(only=("user_id", "user_email", "user_full_name", "user_is_active", "created_on")).dump(new_user)
-    return new_user_data, 201
+    return jsonify({"message": "The user has been created."}), 201
 
 
 @accounts_blueprint.route("/signin", methods=["POST"])
@@ -40,13 +43,29 @@ def signin():
     try:
         user, result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     if not user.check_hashed_password(result["user_password"]):
-        return {"user_password":["User password is incorrect."]}, 401
+        return jsonify(
+            {
+                "message": "The user credentials are incorrect.",
+                "errors": {"user_password":["User password is incorrect."]}
+            }
+        ), 401
 
     user_data = UsersSigninSchema(only=("user_id", "user_email", "user_full_name", "user_is_active", "created_on")).dump(user)
     bearer_token = generate_jwt_token(user_data)
-    return {"bearer_token": bearer_token}, 200
+    return jsonify(
+        {
+            "messgae": "The user logged in succesfully.",
+            "token": bearer_token,
+            "data": {"user": user_data}
+        }
+    ), 200
 
 

@@ -1,8 +1,8 @@
 from core.database import Session
 from marshmallow import ValidationError
+from flask import Blueprint, jsonify, request
 from models.vehicles_model import VehiclesModel
 from schemas.vehicles_schema import VehiclesSchema
-from flask import Blueprint, jsonify, request, Response
 from middlewares.authentication_decorator import check_authentication
 
 
@@ -22,7 +22,15 @@ def index():
         vehicles = db_session.query(VehiclesModel).filter().all()
 
     vehicles_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicles, many=True)
-    return jsonify(vehicles_data), 200
+    return jsonify(
+        {
+            "message": "A list of vehicles founded in database.",
+            "data": {
+                "vehicles":vehicles_data,
+                "count": len(vehicles_data)
+            }
+        }
+    ), 200
 
 
 @vehicles_blueprint.route("/", methods=["POST"])
@@ -32,7 +40,12 @@ def create():
     try:
         result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     vehicle_data = schema.dump(result)
     new_vehicle = VehiclesModel(**vehicle_data)
@@ -42,8 +55,13 @@ def create():
     db_session.commit()
 
     db_session.refresh(new_vehicle)
-    new_user_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(new_vehicle)
-    return new_user_data, 201
+    new_vehicle_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(new_vehicle)
+    return jsonify(
+        {
+            "message": "The vehicle has been created.",
+            "data": {"vehicle": new_vehicle_data}
+        }
+    ), 201
 
 
 @vehicles_blueprint.route("/<int:vehicle_id>", methods=["GET"])
@@ -53,10 +71,15 @@ def read(vehicle_id):
         vehicle = db_session.query(VehiclesModel).filter_by(vehicle_id=vehicle_id).first()
 
     if not vehicle:
-        return Response(status=204)
+        return jsonify({"message": "The vehicle is not found in database."}), 204
 
     vehicle_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicle)
-    return jsonify(vehicle_data), 200
+    return jsonify(
+        {
+            "message": "The vehicle has been found in database.",
+            "data": {"vehicle": vehicle_data}
+        }
+    ), 200
 
 
 @vehicles_blueprint.route("/<int:vehicle_id>", methods=["PUT"])
@@ -66,14 +89,19 @@ def update(vehicle_id):
     try:
         result = schema.load(request_data)
     except ValidationError as err:
-        return err.messages, 400
+        return jsonify(
+            {
+                "message": "There are some data validation errors.",
+                "errors": err.messages
+            }
+        ), 400
     
     vehicle_data = None
     with Session() as db_session:
         vehicle = db_session.query(VehiclesModel).filter_by(vehicle_id=vehicle_id).first()
 
         if not vehicle:
-            return Response(status=204)
+            return jsonify({"message": "The vehicle is not found in database."}), 204
         
         # update values here
         vehicle.vehicle_make = result["vehicle_make"]
@@ -93,7 +121,12 @@ def update(vehicle_id):
         db_session.refresh(vehicle)
         vehicle_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicle)
 
-    return jsonify(vehicle_data), 200
+    return jsonify(
+        {
+            "message": "The vehicle has been updated in database.",
+            "data": {"vehicle": vehicle_data}
+        }
+    ), 200
 
 
 @vehicles_blueprint.route("/<int:vehicle_id>", methods=["DELETE"])
@@ -103,13 +136,18 @@ def delete(vehicle_id):
         vehicle = db_session.query(VehiclesModel).filter_by(vehicle_id=vehicle_id).first()
 
         if not vehicle:
-            return Response(status=204)
+            return jsonify({"message": "The vehicle is not found in database."}), 204
 
         vehicle_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicle)
 
         db_session.delete(vehicle)
         db_session.commit()
 
-    return jsonify(vehicle_data), 200
+    return jsonify(
+        {
+            "message": "The vehicle has been deleted from database.",
+            "data": {"vehicle": vehicle_data}
+        }
+    ), 200
 
 
