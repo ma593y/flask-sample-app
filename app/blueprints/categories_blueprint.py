@@ -1,4 +1,4 @@
-from core.database import Session
+from core.database_config import Session
 from marshmallow import ValidationError
 from flask import Blueprint, jsonify, request
 from models.categories_model import CategoriesModel
