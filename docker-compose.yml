@@ -1,11 +1,18 @@
 services:
   db:
-    image: mysql
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: ropstam_test_task_db
-      MYSQL_USER: ropstam_user
-      MYSQL_PASSWORD: ropstam_pass
+      MYSQL_DATABASE: ${DB_NAME}
+      # User Creds...
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      # Root Creds...
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     ports:
       - 3306:3306
 
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass ${REDIS_PASSWORD}
