@@ -33,7 +33,7 @@ print(f"\n-> ENV is set to: {app.config['ENV']}\n")
 
 
 # Import Database Configurations & Models
-from core.database import engine, Session, Base
+from core.database_config import engine, Session, Base
 from models.users_model import UsersModel
 from models.vehicles_model import VehiclesModel
 from models.categories_model import CategoriesModel
@@ -47,15 +47,9 @@ Base.metadata.create_all(engine)
 # SQLAlchemy session handling
 @app.teardown_appcontext
 def shutdown_session(*args, **kwargs):
-    print(
-        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - \n",
-        f"before: {engine.pool.status()}"
-    )
+    print(" -"*50, f"\n before: {engine.pool.status()}")
     Session.remove()
-    print(
-        f" after:  {engine.pool.status()}\n",
-        " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ",
-    )
+    print(f" after:  {engine.pool.status()}\n", " -"*50)
 
 
 # 404 Error Handler
@@ -68,6 +62,7 @@ def page_not_found(error):
 @app.route("/")
 def hello():
     return jsonify({"message":"hello world!"}), 200
+
 
 # Endpoint for Database Status
 @app.route("/db_status")
@@ -95,3 +90,5 @@ app.register_blueprint(vehicles_blueprint)
 # Run flask app
 if __name__=="__main__":
     app.run(host=os.getenv("HOST"), port=os.getenv("PORT"))
+
+
