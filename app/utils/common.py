@@ -1,7 +1,8 @@
-import os, jwt, secrets, smtplib
+import os, jwt, secrets, smtplib, redis
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from datetime import datetime, timedelta, timezone
+from core.redis_config import redis_pool_session
 
 
 
@@ -58,5 +59,43 @@ def generate_jwt_token(user_data):
     token = jwt.encode(payload, os.getenv("RSA_PRIVATE_KEY"), algorithm="RS512")
     bearer_token = f"Bearer {token}"
     return bearer_token
+
+
+
+def generate_user_session(user_id, token):
+    r = redis.Redis(connection_pool=redis_pool_session)
+    key, value, ex = f"{user_id}@@@{token}", 'valid-token', 10805
+    r.set(key, value, ex=ex)
+
+
+
+def check_user_session(user_id, token):
+    r = redis.Redis(connection_pool=redis_pool_session)
+    key = f"{user_id}@@@{token}"
+    return r.exists(key)
+
+
+
+def delete_user_session(user_id, token):
+    r = redis.Redis(connection_pool=redis_pool_session)
+    key = f"{user_id}@@@{token}"
+    return r.delete(key)
+
+
+
+def count_user_sessions(user_id):
+    r = redis.Redis(connection_pool=redis_pool_session)
+    all_sessions = r.keys(f'{user_id}@@@*')
+    return len(all_sessions)
+
+
+
+def delete_user_sessions(user_id, token):
+    r = redis.Redis(connection_pool=redis_pool_session)
+    current_session = f"{user_id}@@@{token}"
+    all_sessions = r.keys(f'{user_id}@@@*')
+    all_sessions.remove(current_session)
+    if all_sessions:
+        r.delete(*all_sessions)
 
 

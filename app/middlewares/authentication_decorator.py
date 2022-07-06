@@ -1,6 +1,7 @@
 import jwt, os
 from functools import wraps
 from flask import request, jsonify
+from utils.common import check_user_session
 
 
 
@@ -16,6 +17,10 @@ def check_authentication(f):
             payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
             if not payload["user_is_active"]:
                 return jsonify({"message": "User is not active."}), 401
+
+            if not check_user_session(payload["user_id"], token):
+                return jsonify({"message": "User session has been expired."}), 401
+
         except jwt.ExpiredSignatureError:
             return jsonify({"message": "Bearer token is expired."}), 401
         except jwt.InvalidTokenError:
