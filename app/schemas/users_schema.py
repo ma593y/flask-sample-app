@@ -1,5 +1,5 @@
 from wsgiref import validate
-from core.database import Session
+from core.database_config import Session
 from models.users_model import UsersModel
 from marshmallow import EXCLUDE, Schema, fields, validate, post_load, ValidationError
 

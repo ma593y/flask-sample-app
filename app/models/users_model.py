@@ -1,4 +1,4 @@
-from core.database import Base
+from core.database_config import Base
 from sqlalchemy.sql import func
 from sqlalchemy import Boolean, Column, Integer, String, DATETIME
 from werkzeug.security import generate_password_hash, check_password_hash

@@ -1,9 +1,19 @@
-from core.database import Session
+import os, jwt
+from core.database_config import Session
 from marshmallow import ValidationError
 from models.users_model import UsersModel
 from flask import Blueprint, request, jsonify
 from schemas.users_schema import UsersSignupSchema, UsersSigninSchema
-from utils.common import generate_random_password, email_password_to_user, generate_jwt_token
+from middlewares.authentication_decorator import check_authentication
+from utils.common import (
+    generate_random_password, 
+    email_password_to_user, 
+    generate_jwt_token, 
+    generate_user_session, 
+    delete_user_session,
+    count_user_sessions, 
+    delete_user_sessions
+)
 
 
 accounts_blueprint = Blueprint("accounts", __name__, url_prefix="/accounts")
@@ -60,6 +70,7 @@ def signin():
 
     user_data = UsersSigninSchema(only=("user_id", "user_email", "user_full_name", "user_is_active", "created_on")).dump(user)
     bearer_token = generate_jwt_token(user_data)
+    generate_user_session(user_data["user_id"], bearer_token[7:])
     return jsonify(
         {
             "messgae": "The user logged in succesfully.",
@@ -67,5 +78,40 @@ def signin():
             "data": {"user": user_data}
         }
     ), 200
+
+
+
+@accounts_blueprint.route("/signout", methods=["GET"])
+@check_authentication
+def signout():
+    token = request.headers.get('Authorization')[7:]
+    payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
+    delete_user_session(payload["user_id"], token)
+    return jsonify({"messgae": "The user logged out succesfully."}), 200
+
+
+
+@accounts_blueprint.route("/sessions", methods=["GET"])
+@check_authentication
+def count_sessions():
+    token = request.headers.get('Authorization')[7:]
+    payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
+    sessions_count = count_user_sessions(payload["user_id"])
+    return jsonify(
+        {
+            "messgae": f"The user has {sessions_count} active session{'s' if sessions_count > 1 else ''}.",
+            "data": {"sessions_count": sessions_count}
+        }
+    ), 200
+
+
+
+@accounts_blueprint.route("/sessions", methods=["DELETE"])
+@check_authentication
+def delete_sessions():
+    token = request.headers.get('Authorization')[7:]
+    payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
+    delete_user_sessions(payload["user_id"], token)
+    return jsonify({"messgae": "All user sessions except current has been removed."}), 200
 
 
