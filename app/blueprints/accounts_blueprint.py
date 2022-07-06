@@ -1,6 +1,6 @@
 import os, jwt
-from core.database_config import Session
 from marshmallow import ValidationError
+from core.database_config import Session
 from models.users_model import UsersModel
 from flask import Blueprint, request, jsonify
 from schemas.users_schema import UsersSignupSchema, UsersSigninSchema
@@ -80,7 +80,6 @@ def signin():
     ), 200
 
 
-
 @accounts_blueprint.route("/signout", methods=["GET"])
 @check_authentication
 def signout():
@@ -88,7 +87,6 @@ def signout():
     payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
     delete_user_session(payload["user_id"], token)
     return jsonify({"messgae": "The user logged out succesfully."}), 200
-
 
 
 @accounts_blueprint.route("/sessions", methods=["GET"])
@@ -105,13 +103,12 @@ def count_sessions():
     ), 200
 
 
-
 @accounts_blueprint.route("/sessions", methods=["DELETE"])
 @check_authentication
 def delete_sessions():
     token = request.headers.get('Authorization')[7:]
     payload = jwt.decode(token, os.getenv("RSA_PUBLIC_KEY"), algorithms=["RS512"])
     delete_user_sessions(payload["user_id"], token)
-    return jsonify({"messgae": "All user sessions except current has been removed."}), 200
+    return jsonify({"messgae": "All user sessions except the current one has been removed."}), 200
 
 
