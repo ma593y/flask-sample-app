@@ -1,8 +1,10 @@
+from sqlalchemy import and_
 from core.database_config import Session
 from marshmallow import ValidationError
 from flask import Blueprint, jsonify, request
 from models.vehicles_model import VehiclesModel
 from schemas.vehicles_schema import VehiclesSchema
+from utils.vehicles import get_vehicles_query_filters
 from middlewares.authentication_decorator import check_authentication
 
 
@@ -17,9 +19,29 @@ def before_request(*args, **kwargs):
 
 @vehicles_blueprint.route("/", methods=["GET"])
 def index():
+    # filtering...
+    query_filters = get_vehicles_query_filters(request.args)
+
+    # pagination and sorting...
+    offset, limit, sort, sort_by = (
+        request.args.get("offset", default=0, type=int),
+        request.args.get("limit", default=10, type=int),
+        request.args.get("sort", default='asc', type=str),
+        request.args.get("sort_by", default='id', type=str)
+    )
+
+    order_by = []
+    if sort_by == 'year':
+        order_by.append(VehiclesModel.vehicle_year.desc()) if sort == 'desc' else order_by.append(VehiclesModel.vehicle_year.asc())
+    elif sort_by == 'price':
+        order_by.append(VehiclesModel.vehicle_price.desc()) if sort == 'desc' else order_by.append(VehiclesModel.vehicle_price.asc())
+    else:
+        order_by.append(VehiclesModel.vehicle_id.desc()) if sort == 'desc' else order_by.append(VehiclesModel.vehicle_id.asc())
+
     vehicles = None
     with Session() as db_session:
-        vehicles = db_session.query(VehiclesModel).filter().all()
+        vehicles = db_session.query(VehiclesModel).filter(and_(*query_filters)).order_by(*order_by).offset(offset).limit(limit)
+        total_count = db_session.query(VehiclesModel).count()
 
     vehicles_data = VehiclesSchema(only=("vehicle_id", "vehicle_make", "vehicle_model", "vehicle_color", "vehicle_fuel_type", "vehicle_transmission", "vehicle_year", "vehicle_price", "vehicle_mileage", "vehicle_tank_capacity", "vehicle_engine_capacity", "category_id", "updated_on", "created_on")).dump(vehicles, many=True)
     return jsonify(
@@ -27,7 +49,8 @@ def index():
             "message": "A list of vehicles founded in database.",
             "data": {
                 "vehicles":vehicles_data,
-                "count": len(vehicles_data)
+                "count": len(vehicles_data),
+                "total": total_count
             }
         }
     ), 200

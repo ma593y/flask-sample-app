@@ -1,7 +1,7 @@
 import os
-from flask import Flask, jsonify, request, make_response
 from flask_cors import CORS
 from dotenv import load_dotenv
+from flask import Flask, Blueprint, request, jsonify, make_response
 
 
 # Load env variables
@@ -54,18 +54,32 @@ def shutdown_session(*args, **kwargs):
 
 # 404 Error Handler
 @app.errorhandler(404)
-def page_not_found(error):
+def endpoint_not_found(error):
     return jsonify({"message": "This endpoint doesn't exists."}), 404
 
 
+# Import blueprints
+from blueprints.accounts_blueprint import accounts_blueprint
+from blueprints.categories_blueprint import categories_blueprint
+from blueprints.vehicles_blueprint import vehicles_blueprint
+
+
+# Register blueprints to app v1
+app_v1 = Blueprint('app_v1', __name__, url_prefix='/v1')
+
+app_v1.register_blueprint(accounts_blueprint)
+app_v1.register_blueprint(categories_blueprint)
+app_v1.register_blueprint(vehicles_blueprint)
+
+
 # Temp Routes
-@app.route("/")
+@app_v1.route("/")
 def hello():
     return jsonify({"message":"hello world!"}), 200
 
 
 # Endpoint for Database Status
-@app.route("/db_status")
+@app_v1.route("/db_status")
 def db():
     db_session = Session()
     try:
@@ -75,16 +89,8 @@ def db():
         return jsonify({"message": "Something is wrong with database."}), 503
 
 
-# Import blueprints
-from blueprints.accounts_blueprint import accounts_blueprint
-from blueprints.categories_blueprint import categories_blueprint
-from blueprints.vehicles_blueprint import vehicles_blueprint
-
-
-# Register blueprints to flask app
-app.register_blueprint(accounts_blueprint)
-app.register_blueprint(categories_blueprint)
-app.register_blueprint(vehicles_blueprint)
+# Register app version blueprints to main flask app
+app.register_blueprint(app_v1)
 
 
 # Run flask app

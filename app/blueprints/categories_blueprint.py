@@ -1,5 +1,5 @@
-from core.database_config import Session
 from marshmallow import ValidationError
+from core.database_config import Session
 from flask import Blueprint, jsonify, request
 from models.categories_model import CategoriesModel
 from schemas.categories_schema import CategoriesSchema
@@ -17,9 +17,31 @@ def before_request(*args, **kwargs):
 
 @categories_blueprint.route("/", methods=["GET"])
 def index():
+    # filtering...
+    name = request.args.get("name", default='', type=str).strip().lower()
+
+    query_filters = []
+    if name:
+        query_filters.append(CategoriesModel.category_name.like(f"%{name}%"))
+    
+    # pagination and sorting...
+    offset, limit, sort, sort_by = (
+        request.args.get("offset", default=0, type=int),
+        request.args.get("limit", default=10, type=int),
+        request.args.get("sort", default='asc', type=str),
+        request.args.get("sort_by", default='id', type=str)
+    )
+    
+    order_by = []
+    if sort_by == 'name':
+        order_by.append(CategoriesModel.category_name.desc()) if sort == 'desc' else order_by.append(CategoriesModel.category_name.asc())
+    else:
+        order_by.append(CategoriesModel.category_id.desc()) if sort == 'desc' else order_by.append(CategoriesModel.category_id.asc())
+
     categories = None
     with Session() as db_session:
-        categories = db_session.query(CategoriesModel).filter().all()
+        categories = db_session.query(CategoriesModel).filter(*query_filters).order_by(*order_by).offset(offset).limit(limit)
+        total_count = db_session.query(CategoriesModel).count()
 
     categories_data = CategoriesSchema(only=("category_id", "category_name", "updated_on", "created_on")).dump(categories, many=True)
     return jsonify(
@@ -27,7 +49,8 @@ def index():
             "message": "A list of categories founded in database.",
             "data": {
                 "categories":categories_data,
-                "count": len(categories_data)
+                "count": len(categories_data),
+                "total": total_count
             }
         }
     ), 200
