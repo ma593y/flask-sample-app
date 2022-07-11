@@ -1,6 +1,6 @@
 from sqlalchemy import and_
-from core.database_config import Session
 from marshmallow import ValidationError
+from core.database_config import Session
 from flask import Blueprint, jsonify, request
 from models.vehicles_model import VehiclesModel
 from schemas.vehicles_schema import VehiclesSchema
