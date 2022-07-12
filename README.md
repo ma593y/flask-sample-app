@@ -1,4 +1,4 @@
-# Ropstam-Test-Task-Backend
+# Backend-Flask-App-Best-Practices
 
 A backend app server with the following features,
     
@@ -8,9 +8,9 @@ A backend app server with the following features,
     4. Access API endpoints with the issued JWT token
     5. Data validation on POST/PUT API endpoints
 
-## Backend Tech Stack:
+## App Tech Stack:
 
-The backend app is using following tools and technologies,
+The app is using following tools and technologies,
 
 | Tools & Technologies      | Description  |
 | :-------------: |:-------------|
@@ -22,7 +22,7 @@ The backend app is using following tools and technologies,
 
 ## Project folders and files structure:
     
-    ropstam-test-task-backend/                  # Project foler
+    backend-flask-app-best-practices/                  # Project foler
         app/
             middlewares/                        # It contains decorator files.
                 __init__.py
