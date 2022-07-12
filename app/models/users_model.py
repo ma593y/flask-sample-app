@@ -1,5 +1,5 @@
-from core.database_config import Base
 from sqlalchemy.sql import func
+from core.database_config import Base
 from sqlalchemy import Boolean, Column, Integer, String, DATETIME
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -13,6 +13,7 @@ class UsersModel(Base):
     user_full_name = Column(String(200))
     user_hashed_password = Column(String(200))
     user_is_active = Column(Boolean, default=True)
+    
     updated_on = Column(DATETIME(), onupdate=func.now())
     created_on = Column(DATETIME(), default=func.now())
 
