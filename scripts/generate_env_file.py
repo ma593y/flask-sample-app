@@ -8,7 +8,7 @@ os.system("openssl rsa -in ./keys/RS512.key -pubout -outform PEM -out ./keys/RS5
 RSA_PRIVATE_KEY = str(open("./keys/RS512.key", "rb").read())[1:]
 RSA_PUBLIC_KEY = str(open("./keys/RS512.key.pub", "rb").read())[1:]
 
-ENV_FILE = open("../.env", "w")
+ENV_FILE = open("./.env", "w")
 ENV_FILE.write(f"""HOST = '0.0.0.0'
 PORT = 5000
 
