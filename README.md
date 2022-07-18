@@ -5,14 +5,14 @@ A flask app with the following features and concepts implemented,
     - User sign up using full name and email
     - Email randomly generated password on sign up
     - Sign in the user using randomly generated password
-    - Token based authentication for the API endpoints
-    - Filtering, Pagination and Sorting for API endpoints
-    - Flask, SQLAlchemy, Marshmallow based CRUD API endpoints
-    - Data validation on POST/PUT API endpoints
+    - Token based authentication for the RESTful APIs
+    - Filtering, Pagination and Sorting for RESTful APIs
+    - Flask, SQLAlchemy, Marshmallow based RESTful CRUD APIs
+    - Data validation on POST/PUT RESTful APIs
     - Users session management with Redis
     - Redis connection pool configuariton and handling
     - SQLAlchemy connection pool configuariton and handling
-    - Flask based app project structure
+    - Flask based app project folders and files structure
 
 ## App Tech Stack:
 
@@ -34,7 +34,7 @@ The app is using following tools and technologies,
             middlewares/                        # It contains decorator files.
                 __init__.py
                 middleware_files.py
-            blueprints/                         # It contains api endpoints files.
+            blueprints/                         # It contains restful api endpoints files.
                 __init__.py
                 blueprints_files.py
             schemas/                            # It contains schemas files for data validation, serialization and desrialization.
@@ -54,33 +54,37 @@ The app is using following tools and technologies,
         requirements.txt
         docker-compose.yml
 
-## API endpoints:
+## Postman collection:
 
-The API endpoints are as follows,
+The [RESTful APIs](https://www.postman.com/ma593y/workspace/flask-sample-app/collection/14268727-93cfcfd1-0e67-40d1-9c6e-e442e26d900d?ctx=documentation) postman collection for the sample project is available as well as the [documentation](https://www.postman.com/ma593y/workspace/flask-sample-app/documentation/14268727-93cfcfd1-0e67-40d1-9c6e-e442e26d900d).
+
+## RESTful API endpoints:
+
+The RESTful API endpoints are as follows,
 
     - Temporary API endpoint,
         - [GET] / : hello world!
 
-    - API endpoints for database status,
+    - RESTful API endpoints for database status,
         - [GET] /db_status : show database status
 
-    - API endpoints for signup/signin/signout,
+    - RESTful API endpoints for signup/signin/signout,
         - [POST] accounts/signup  : signup user
         - [POST] accounts/signin  : signin user
         - [GET]  accounts/signout : signout user
 
-    - API endpoints for users session management,
-        - [GET]    accounts/sessions : list user sessions
-        - [DELETE] accounts/sessions : delete user sessions
+    - RESTful API endpoints for users session management,
+        - [GET]    accounts/sessions : user sessions count including current
+        - [DELETE] accounts/sessions : delete user sessions except current
 
-    - API endpoints for vehicle categories,
+    - RESTful API endpoints for vehicle categories,
         - [GET]    categories/ : list categories
         - [POST]   categories/ : create category
         - [GET]    categories/<category_id> : view category
         - [PUT]    categories/<category_id> : update category
         - [DELETE] categories/<category_id> : delete category
-        
-    - API endpoints for vehicles,
+
+    - RESTful API endpoints for vehicles,
         - [GET]    vehicles/ : list vehicles
         - [POST]   vehicles/ : create vehicle
         - [GET]    vehicles/<vehicle_id> : view vehicle
