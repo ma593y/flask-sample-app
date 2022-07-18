@@ -1,12 +1,18 @@
-# Backend-Flask-App-Best-Practices
+# Flask-Sample-App
 
-A backend app server with the following features,
+A flask app with the following features and concepts implemented,
     
-    1. User sign up using full name and email
-    2. Email randomly generated password on sign up
-    3. Sign in using the user credentials to get JWT token
-    4. Access API endpoints with the issued JWT token
-    5. Data validation on POST/PUT API endpoints
+    - User sign up using full name and email
+    - Email randomly generated password on sign up
+    - Sign in the user using randomly generated password
+    - Token based authentication for the API endpoints
+    - Filtering, Pagination and Sorting for API endpoints
+    - Flask, SQLAlchemy, Marshmallow based CRUD API endpoints
+    - Data validation on POST/PUT API endpoints
+    - Users session management with Redis
+    - Redis connection pool configuariton and handling
+    - SQLAlchemy connection pool configuariton and handling
+    - Flask based app project structure
 
 ## App Tech Stack:
 
@@ -18,11 +24,12 @@ The app is using following tools and technologies,
 | [MySQL](https://www.mysql.com/) | An open-source relational database. |
 | [SQLAlchemy](https://www.sqlalchemy.org/) | An open-source object-relational mapper for python. |
 | [Marshmallow](https://marshmallow.readthedocs.io/) | A python library for data validation, serialization and deserialization. |
+| [Redis](https://redis.io/) | An open source in-memory data structure store. |
 | [Docker](https://hub.docker.com/) | An open source containerization platform. |
 
 ## Project folders and files structure:
     
-    backend-flask-app-best-practices/                  # Project foler
+    flask-sample-app/                  # Project foler
         app/
             middlewares/                        # It contains decorator files.
                 __init__.py
@@ -57,9 +64,14 @@ The API endpoints are as follows,
     - API endpoints for database status,
         - [GET] /db_status : show database status
 
-    - API endpoints for user signup and signin,
-        - [POST] accounts/signup : signup user
-        - [POST] accounts/signin : signin user
+    - API endpoints for signup/signin/signout,
+        - [POST] accounts/signup  : signup user
+        - [POST] accounts/signin  : signin user
+        - [GET]  accounts/signout : signout user
+
+    - API endpoints for users session management,
+        - [GET]    accounts/sessions : list user sessions
+        - [DELETE] accounts/sessions : delete user sessions
 
     - API endpoints for vehicle categories,
         - [GET]    categories/ : list categories
@@ -69,7 +81,7 @@ The API endpoints are as follows,
         - [DELETE] categories/<category_id> : delete category
         
     - API endpoints for vehicles,
-        - [GET]    vehicles/ : list vehicle
+        - [GET]    vehicles/ : list vehicles
         - [POST]   vehicles/ : create vehicle
         - [GET]    vehicles/<vehicle_id> : view vehicle
         - [PUT]    vehicles/<vehicle_id> : update vehicle
@@ -89,7 +101,7 @@ The API endpoints are as follows,
     pip install -r requirements.txt
 
   #### 4. Run MySQL database server on docker.
-    docker compose up
+    docker compose up -d
 
   #### 5. Create and set following environment variables in .env file.
     # Set flask variables.
