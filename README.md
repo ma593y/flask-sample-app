@@ -1,7 +1,7 @@
 # Flask-Sample-App
 
 A flask app with the following features and concepts implemented,
-    
+
     - User sign up using full name and email
     - Email randomly generated password on sign up
     - Sign in the user using randomly generated password
