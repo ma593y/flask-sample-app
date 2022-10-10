@@ -18,14 +18,14 @@ A flask app with the following features and concepts implemented,
 
 The app is using following tools and technologies,
 
-| Tools & Technologies      | Description  |
-| :-------------: |:-------------|
-| [Flask](https://flask.palletsprojects.com/) | A micro web framework based on Python. |
-| [MySQL](https://www.mysql.com/) | An open-source relational database. |
-| [SQLAlchemy](https://www.sqlalchemy.org/) | An open-source object-relational mapper for python. |
+|                Tools & Technologies                | Description                                                              |
+|:--------------------------------------------------:|:-------------------------------------------------------------------------|
+|    [Flask](https://flask.palletsprojects.com/)     | A micro web framework based on Python.                                   |
+|          [MySQL](https://www.mysql.com/)           | An open-source relational database.                                      |
+|     [SQLAlchemy](https://www.sqlalchemy.org/)      | An open-source object-relational mapper for python.                      |
 | [Marshmallow](https://marshmallow.readthedocs.io/) | A python library for data validation, serialization and deserialization. |
-| [Redis](https://redis.io/) | An open source in-memory data structure store. |
-| [Docker](https://hub.docker.com/) | An open source containerization platform. |
+|             [Redis](https://redis.io/)             | An open source in-memory data structure store.                           |
+|         [Docker](https://hub.docker.com/)          | An open source containerization platform.                                |
 
 ## Project folders and files structure:
     
@@ -129,7 +129,7 @@ The RESTful API endpoints are as follows,
     RSA_PRIVATE_KEY = 'RSA_PRIVATE_KEY'
     RSA_PUBLIC_KEY = 'RSA_PUBLIC_KEY'
 
-  #### 6. Set FLASK_ENV variable to developemnt.
+  #### 6. Set FLASK_ENV variable to development.
     export FLASK_ENV=development
 
   #### 7. Run flask app.
